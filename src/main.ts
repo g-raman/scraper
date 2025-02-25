@@ -13,13 +13,6 @@ import {
 import "jsr:@std/dotenv/load";
 import * as cheerio from "cheerio";
 import { getError } from "./utils/scrape.ts";
-import "jsr:@std/dotenv/load";
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-
-const connectionString = Deno.env.get("DATABASE_URL") as string;
-export const client = postgres(connectionString, { prepare: false });
-export const db = drizzle(client);
 
 const terms = await getAvailableTerms();
 const browserEndpoint = await getBrowserEndpoint();
