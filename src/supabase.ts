@@ -2,9 +2,17 @@ import { createClient } from "@supabase/supabase-js";
 import "jsr:@std/dotenv/load";
 import { CourseDetails, Subject, Term } from "./utils/types.ts";
 import { SUPABASE_URL } from "./utils/constants.ts";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import { availableTermsTable } from "./db/schema.ts";
+import { sql } from "drizzle-orm";
 
 const supabaseUrl = SUPABASE_URL;
 const supabaseKey = Deno.env.get("SUPABASE_KEY") as string;
+
+const connectionString = Deno.env.get("DATABASE_URL") as string;
+export const client = postgres(connectionString, { prepare: false });
+export const db = drizzle(client);
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -81,23 +89,26 @@ export const upsertCourseDetails = async (
   }
 };
 
-export const updateAvailableTerms = async (
-  availableTerms: Term[],
-): Promise<void> => {
-  console.log("Inserting new available terms...");
+export const updateAvailableTerms = async (terms: Term[]): Promise<void> => {
+  try {
+    await db
+      .insert(availableTermsTable)
+      .values(terms)
+      .onConflictDoUpdate({
+        target: availableTermsTable.term,
+        set: {
+          value: sql`excluded.value`,
+        },
+      });
 
-  const { error } = await supabase
-    .from("availableTerms")
-    .upsert(availableTerms, { onConflict: "term" })
-    .select();
-  if (error) {
+    console.log("Success: Updated available terms");
+    await db.$client.end();
+  } catch (error) {
     console.error(
-      "Error: Something went wrong when inserting new available terms data",
+      "Error: Something went wrong when updating availabe terms: ",
+      error,
     );
-    console.log(error);
-    return;
   }
-  console.log("Successfully inserted new available terms");
 };
 
 export const updateAvailableSubjects = async (
