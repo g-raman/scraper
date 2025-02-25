@@ -4,7 +4,7 @@ import { CourseDetails, Subject, Term } from "./utils/types.ts";
 import { SUPABASE_URL } from "./utils/constants.ts";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { availableTermsTable } from "./db/schema.ts";
+import { availableSubjectsTable, availableTermsTable } from "./db/schema.ts";
 import { sql } from "drizzle-orm";
 
 const supabaseUrl = SUPABASE_URL;
@@ -111,22 +111,21 @@ export const updateAvailableTerms = async (terms: Term[]): Promise<void> => {
 };
 
 export const updateAvailableSubjects = async (
-  availableCourses: Subject[],
+  subjects: Subject[],
 ): Promise<void> => {
-  console.log("Inserting new available subjects...");
-  const { error } = await supabase
-    .from("availableCourses")
-    .upsert(availableCourses, { onConflict: "subject" })
-    .select();
+  try {
+    await db
+      .insert(availableSubjectsTable)
+      .values(subjects)
+      .onConflictDoNothing();
 
-  if (error) {
+    console.log("Success: Updated available subjects");
+  } catch (error) {
     console.error(
-      "Error: Something went wrong when inserting new available subjects data",
+      "Error: Something went wrong when updating availabe subjects: ",
+      error,
     );
-    console.log(error);
-    return;
   }
-  console.log("Successfully inserted new available subjects");
 };
 
 export default getAvailableTerms;
