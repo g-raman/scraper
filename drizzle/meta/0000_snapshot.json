@@ -1,5 +1,5 @@
 {
-  "id": "940854f0-e3d4-4a5c-b76d-bc30260f92c8",
+  "id": "ca200f01-29d0-461b-aa0c-74056ce6aede",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -14,8 +14,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "isDeleted": {
-          "name": "isDeleted",
+        "is_deleted": {
+          "name": "is_deleted",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
@@ -26,9 +26,20 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
+      "policies": {
+        "read access for all users policy": {
+          "name": "read access for all users policy",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "public"
+          ],
+          "using": "",
+          "withCheck": ""
+        }
+      },
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     },
     "public.available_terms": {
       "name": "available_terms",
@@ -46,8 +57,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "isDeleted": {
-          "name": "isDeleted",
+        "is_deleted": {
+          "name": "is_deleted",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
@@ -66,16 +77,27 @@
           ]
         }
       },
-      "policies": {},
+      "policies": {
+        "read access for all users policy": {
+          "name": "read access for all users policy",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "public"
+          ],
+          "using": "",
+          "withCheck": ""
+        }
+      },
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     },
     "public.course_components": {
       "name": "course_components",
       "schema": "",
       "columns": {
-        "courseCode": {
-          "name": "courseCode",
+        "course_code": {
+          "name": "course_code",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -86,8 +108,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "subSection": {
-          "name": "subSection",
+        "sub_section": {
+          "name": "sub_section",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -98,8 +120,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "isOpen": {
-          "name": "isOpen",
+        "is_open": {
+          "name": "is_open",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true
@@ -110,8 +132,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "isDeleted": {
-          "name": "isDeleted",
+        "is_deleted": {
+          "name": "is_deleted",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
@@ -125,11 +147,11 @@
           "tableFrom": "course_components",
           "tableTo": "courses",
           "columnsFrom": [
-            "courseCode",
+            "course_code",
             "term"
           ],
           "columnsTo": [
-            "courseCode",
+            "course_code",
             "term"
           ],
           "onDelete": "cascade",
@@ -137,26 +159,37 @@
         }
       },
       "compositePrimaryKeys": {
-        "course_components_courseCode_term_subSection_pk": {
-          "name": "course_components_courseCode_term_subSection_pk",
+        "course_components_course_code_term_sub_section_pk": {
+          "name": "course_components_course_code_term_sub_section_pk",
           "columns": [
-            "courseCode",
+            "course_code",
             "term",
-            "subSection"
+            "sub_section"
           ]
         }
       },
       "uniqueConstraints": {},
-      "policies": {},
+      "policies": {
+        "read access for all users policy": {
+          "name": "read access for all users policy",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "public"
+          ],
+          "using": "",
+          "withCheck": ""
+        }
+      },
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     },
     "public.courses": {
       "name": "courses",
       "schema": "",
       "columns": {
-        "courseCode": {
-          "name": "courseCode",
+        "course_code": {
+          "name": "course_code",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -167,14 +200,14 @@
           "primaryKey": false,
           "notNull": false
         },
-        "courseTitle": {
-          "name": "courseTitle",
+        "course_title": {
+          "name": "course_title",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "isDeleted": {
-          "name": "isDeleted",
+        "is_deleted": {
+          "name": "is_deleted",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
@@ -198,10 +231,10 @@
         }
       },
       "compositePrimaryKeys": {
-        "courses_courseCode_term_pk": {
-          "name": "courses_courseCode_term_pk",
+        "courses_course_code_term_pk": {
+          "name": "courses_course_code_term_pk",
           "columns": [
-            "courseCode",
+            "course_code",
             "term"
           ]
         }
@@ -211,13 +244,24 @@
           "name": "courses_courseCode_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "courseCode"
+            "course_code"
           ]
         }
       },
-      "policies": {},
+      "policies": {
+        "read access for all users policy": {
+          "name": "read access for all users policy",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "public"
+          ],
+          "using": "",
+          "withCheck": ""
+        }
+      },
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     },
     "public.sessions": {
       "name": "sessions",
@@ -230,8 +274,8 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "courseCode": {
-          "name": "courseCode",
+        "course_code": {
+          "name": "course_code",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -242,8 +286,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "subSection": {
-          "name": "subSection",
+        "sub_section": {
+          "name": "sub_section",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -254,32 +298,32 @@
           "primaryKey": false,
           "notNull": true
         },
-        "dayOfWeek": {
-          "name": "dayOfWeek",
+        "day_of_week": {
+          "name": "day_of_week",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "startTime": {
-          "name": "startTime",
+        "start_time": {
+          "name": "start_time",
           "type": "time",
           "primaryKey": false,
           "notNull": true
         },
-        "endTime": {
-          "name": "endTime",
+        "end_time": {
+          "name": "end_time",
           "type": "time",
           "primaryKey": false,
           "notNull": true
         },
-        "startDate": {
-          "name": "startDate",
+        "start_date": {
+          "name": "start_date",
           "type": "date",
           "primaryKey": false,
           "notNull": true
         },
-        "endDate": {
-          "name": "endDate",
+        "end_date": {
+          "name": "end_date",
           "type": "date",
           "primaryKey": false,
           "notNull": true
@@ -290,8 +334,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "isDeleted": {
-          "name": "isDeleted",
+        "is_deleted": {
+          "name": "is_deleted",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
@@ -312,14 +356,14 @@
           "tableFrom": "sessions",
           "tableTo": "course_components",
           "columnsFrom": [
-            "courseCode",
+            "course_code",
             "term",
-            "subSection"
+            "sub_section"
           ],
           "columnsTo": [
-            "courseCode",
+            "course_code",
             "term",
-            "subSection"
+            "sub_section"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -327,9 +371,20 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
+      "policies": {
+        "read access for all users policy": {
+          "name": "read access for all users policy",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "public"
+          ],
+          "using": "",
+          "withCheck": ""
+        }
+      },
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     }
   },
   "enums": {},

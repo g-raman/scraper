@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1740456083623,
-      "tag": "0000_wandering_the_fallen",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1740456518111,
-      "tag": "0001_keen_lila_cheney",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1740456967026,
-      "tag": "0002_shocking_robbie_robertson",
+      "when": 1740459375954,
+      "tag": "0000_third_paibok",
       "breakpoints": true
     }
   ]
