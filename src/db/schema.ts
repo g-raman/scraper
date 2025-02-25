@@ -2,6 +2,7 @@ import {
   boolean,
   date,
   foreignKey,
+  pgPolicy,
   pgTable,
   primaryKey,
   text,
@@ -9,17 +10,33 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
-export const availableTermsTable = pgTable("available_terms", {
-  term: text().primaryKey(),
-  value: text().notNull().unique(),
-  isDeleted: boolean().notNull().default(false),
-}).enableRLS();
+const readPolicy = pgPolicy("read access for all users policy", {
+  for: "select",
+  to: "public",
+  using: sql``,
+  withCheck: sql``,
+});
 
-export const availableSubjectsTable = pgTable("available_subjects", {
-  subject: text().primaryKey(),
-  isDeleted: boolean().notNull().default(false),
-}).enableRLS();
+export const availableTermsTable = pgTable(
+  "available_terms",
+  {
+    term: text().primaryKey(),
+    value: text().notNull().unique(),
+    isDeleted: boolean().notNull().default(false),
+  },
+  () => [readPolicy],
+).enableRLS();
+
+export const availableSubjectsTable = pgTable(
+  "available_subjects",
+  {
+    subject: text().primaryKey(),
+    isDeleted: boolean().notNull().default(false),
+  },
+  () => [readPolicy],
+).enableRLS();
 
 export const coursesTable = pgTable(
   "courses",
@@ -31,7 +48,10 @@ export const coursesTable = pgTable(
     courseTitle: text().notNull(),
     isDeleted: boolean().notNull().default(false),
   },
-  (table) => [primaryKey({ columns: [table.courseCode, table.term] })],
+  (table) => [
+    primaryKey({ columns: [table.courseCode, table.term] }),
+    readPolicy,
+  ],
 ).enableRLS();
 
 export const courseComponentsTable = pgTable(
@@ -52,6 +72,7 @@ export const courseComponentsTable = pgTable(
       foreignColumns: [coursesTable.courseCode, coursesTable.term],
       name: "course_fk",
     }).onDelete("cascade"),
+    readPolicy,
   ],
 ).enableRLS();
 
@@ -82,5 +103,6 @@ export const sessionsTable = pgTable(
       ],
       name: "course_component_fk",
     }).onDelete("cascade"),
+    readPolicy,
   ],
 ).enableRLS();
