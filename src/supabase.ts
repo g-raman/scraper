@@ -1,10 +1,23 @@
 import { createClient } from "@supabase/supabase-js";
 import "jsr:@std/dotenv/load";
-import { CourseDetails, Subject, Term } from "./utils/types.ts";
+import {
+  Course,
+  CourseComponent,
+  CourseDetails,
+  Subject,
+  Term,
+  Session,
+} from "./utils/types.ts";
 import { SUPABASE_URL } from "./utils/constants.ts";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { availableSubjectsTable, availableTermsTable } from "./db/schema.ts";
+import {
+  availableSubjectsTable,
+  availableTermsTable,
+  courseComponentsTable,
+  coursesTable,
+  sessionsTable,
+} from "./db/schema.ts";
 import { sql } from "drizzle-orm";
 
 const supabaseUrl = SUPABASE_URL;
@@ -12,7 +25,7 @@ const supabaseKey = Deno.env.get("SUPABASE_KEY") as string;
 
 const connectionString = Deno.env.get("DATABASE_URL") as string;
 export const client = postgres(connectionString, { prepare: false });
-export const db = drizzle(client);
+export const db = drizzle(client, { casing: "snake_case" });
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -56,36 +69,65 @@ export const getAvailableCourses = async () => {
 export const upsertCourseDetails = async (
   details: CourseDetails,
 ): Promise<void> => {
-  const { error: courseInsertError } = await supabase
-    .from("courses")
-    .upsert(details.courses);
+  await updateCourses(details.courses);
+  await updateCourseComponents(details.courseComponents);
+  await updateSessions(details.sessions);
 
-  if (courseInsertError) {
-    console.log(courseInsertError);
-    console.log();
-    return;
+  for (const course of details.courses) {
+    console.log(`Updated details for ${course.courseCode}`);
   }
+};
 
-  const { error: componentInsertError } = await supabase
-    .from("courseComponents")
-    .upsert(details.courseComponents);
-
-  if (componentInsertError) {
-    console.log(componentInsertError);
-    console.log();
-    return;
+export const updateCourses = async (courses: Course[]) => {
+  try {
+    await db
+      .insert(coursesTable)
+      .values(courses)
+      .onConflictDoUpdate({
+        target: [coursesTable.courseCode, coursesTable.courseTitle],
+        set: {
+          courseTitle: sql`excluded.course_title`,
+        },
+      });
+  } catch (error) {
+    console.error(
+      "Error: Something went wrong when inserting courses: ",
+      error,
+    );
   }
+};
 
-  const { error: sessionInsertError } = await supabase
-    .from("sessions")
-    .insert(details.sessions);
-  if (sessionInsertError) {
-    console.log(sessionInsertError);
-    console.log();
-    return;
+export const updateCourseComponents = async (
+  courseComponents: CourseComponent[],
+) => {
+  try {
+    await db
+      .insert(courseComponentsTable)
+      .values(courseComponents)
+      .onConflictDoUpdate({
+        target: [
+          courseComponentsTable.courseCode,
+          courseComponentsTable.term,
+          courseComponentsTable.subSection,
+        ],
+        set: {
+          section: sql`excluded.section`,
+          type: sql`excluded.type`,
+        },
+      });
+  } catch (error) {
+    console.error(
+      "Error: Something went wrong when inserting course components: ",
+      error,
+    );
   }
-  for (let i = 0; i < details.courses.length; i++) {
-    console.log(`Updated data for ${details.courses[i].courseCode}`);
+};
+
+export const updateSessions = async (sessions: Session[]) => {
+  try {
+    await db.insert(sessionsTable).values(sessions);
+  } catch (error) {
+    console.log("Error: Something went wrong when inserting sessions: ", error);
   }
 };
 
