@@ -14,12 +14,12 @@ export const availableTermsTable = pgTable("available_terms", {
   term: text().primaryKey(),
   value: text().notNull().unique(),
   isDeleted: boolean().notNull().default(false),
-});
+}).enableRLS();
 
 export const availableSubjectsTable = pgTable("available_subjects", {
   subject: text().primaryKey(),
   isDeleted: boolean().notNull().default(false),
-});
+}).enableRLS();
 
 export const coursesTable = pgTable(
   "courses",
@@ -32,7 +32,7 @@ export const coursesTable = pgTable(
     isDeleted: boolean().notNull().default(false),
   },
   (table) => [primaryKey({ columns: [table.courseCode, table.term] })],
-);
+).enableRLS();
 
 export const courseComponentsTable = pgTable(
   "course_components",
@@ -53,7 +53,7 @@ export const courseComponentsTable = pgTable(
       name: "course_fk",
     }).onDelete("cascade"),
   ],
-);
+).enableRLS();
 
 export const sessionsTable = pgTable(
   "sessions",
@@ -83,4 +83,4 @@ export const sessionsTable = pgTable(
       name: "course_component_fk",
     }).onDelete("cascade"),
   ],
-);
+).enableRLS();
