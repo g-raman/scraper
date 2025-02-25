@@ -102,7 +102,6 @@ export const updateAvailableTerms = async (terms: Term[]): Promise<void> => {
       });
 
     console.log("Success: Updated available terms");
-    await db.$client.end();
   } catch (error) {
     console.error(
       "Error: Something went wrong when updating availabe terms: ",
