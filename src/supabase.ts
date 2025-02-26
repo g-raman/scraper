@@ -69,12 +69,16 @@ export const getAvailableCourses = async () => {
 export const upsertCourseDetails = async (
   details: CourseDetails,
 ): Promise<void> => {
-  await updateCourses(details.courses);
-  await updateCourseComponents(details.courseComponents);
-  await updateSessions(details.sessions);
+  try {
+    await updateCourses(details.courses);
+    await updateCourseComponents(details.courseComponents);
+    await updateSessions(details.sessions);
 
-  for (const course of details.courses) {
-    console.log(`Updated details for ${course.courseCode}`);
+    for (const course of details.courses) {
+      console.log(`Updated details for ${course.courseCode}`);
+    }
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -84,16 +88,13 @@ export const updateCourses = async (courses: Course[]) => {
       .insert(coursesTable)
       .values(courses)
       .onConflictDoUpdate({
-        target: [coursesTable.courseCode, coursesTable.courseTitle],
+        target: [coursesTable.courseCode, coursesTable.term],
         set: {
           courseTitle: sql`excluded.course_title`,
         },
       });
   } catch (error) {
-    console.error(
-      "Error: Something went wrong when inserting courses: ",
-      error,
-    );
+    throw new Error("Something went wrong when inserting courses:\n" + error);
   }
 };
 
@@ -116,9 +117,8 @@ export const updateCourseComponents = async (
         },
       });
   } catch (error) {
-    console.error(
-      "Error: Something went wrong when inserting course components: ",
-      error,
+    throw new Error(
+      "Something went wrong when inserting course components:\n" + error,
     );
   }
 };
@@ -127,7 +127,7 @@ export const updateSessions = async (sessions: Session[]) => {
   try {
     await db.insert(sessionsTable).values(sessions);
   } catch (error) {
-    console.log("Error: Something went wrong when inserting sessions: ", error);
+    throw new Error("Something went wrong when inserting sessions:\n" + error);
   }
 };
 
