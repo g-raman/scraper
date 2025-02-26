@@ -18,34 +18,29 @@ import {
   coursesTable,
   sessionsTable,
 } from "./db/schema.ts";
-import { sql } from "drizzle-orm";
-
-const supabaseUrl = SUPABASE_URL;
-const supabaseKey = Deno.env.get("SUPABASE_KEY") as string;
+import { asc, sql } from "drizzle-orm";
 
 const connectionString = Deno.env.get("DATABASE_URL") as string;
 export const client = postgres(connectionString, { prepare: false });
 export const db = drizzle(client, { casing: "snake_case" });
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
-
 const getAvailableTerms = async (): Promise<Term[]> => {
-  console.log("Fetching available terms...");
-  const res = await supabase
-    .from("availableTerms")
-    .select("term,value")
-    .order("term", { ascending: true });
-  if (res.error) {
-    console.error(
-      "Error: Something went wrong when fetching list of available terms",
-    );
-    console.log(res.error);
-    console.log();
-  }
+  try {
+    const result = await db
+      .select({
+        term: availableTermsTable.term,
+        value: availableTermsTable.value,
+      })
+      .from(availableTermsTable)
+      .orderBy(asc(availableTermsTable.term));
 
-  const terms = res.data as Term[];
-  console.log("Available terms fetched\n");
-  return terms;
+    return result;
+  } catch (error) {
+    console.error(
+      "Something went wrong when fetching available terms: " + error,
+    );
+  }
+  return [];
 };
 
 export const getAvailableCourses = async () => {
