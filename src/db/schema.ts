@@ -41,10 +41,12 @@ export const availableSubjectsTable = pgTable(
 export const coursesTable = pgTable(
   "courses",
   {
-    courseCode: text().unique(),
-    term: text().references(() => availableTermsTable.value, {
-      onDelete: "cascade",
-    }),
+    courseCode: text().notNull().unique(),
+    term: text()
+      .notNull()
+      .references(() => availableTermsTable.value, {
+        onDelete: "cascade",
+      }),
     courseTitle: text().notNull(),
     isDeleted: boolean().notNull().default(false),
   },
