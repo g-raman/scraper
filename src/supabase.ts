@@ -43,22 +43,19 @@ const getAvailableTerms = async (): Promise<Term[]> => {
   return [];
 };
 
-export const getAvailableCourses = async () => {
-  console.log("Fetching available courses...");
-  const res = await supabase
-    .from("availableCourses")
-    .select("subject")
-    .order("subject", { ascending: true });
-  if (res.error) {
+export const getAvailableSubjects = async () => {
+  try {
+    const result = await db
+      .select({ subject: availableSubjectsTable })
+      .from(availableSubjectsTable)
+      .orderBy(asc(availableSubjectsTable.subject));
+
+    return result;
+  } catch (error) {
     console.error(
-      "Error: Something went wrong when fetching list of available courses",
+      "Something went wrong when fetching available subjects:\n" + error,
     );
-    console.log(res.error);
-    console.log();
   }
-  const courses = res?.data?.map((course) => course.subject) as string[];
-  console.log("Available courses fetched\n");
-  return courses;
 };
 
 export const upsertCourseDetails = async (
