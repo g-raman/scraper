@@ -1,5 +1,5 @@
 {
-  "id": "ca200f01-29d0-461b-aa0c-74056ce6aede",
+  "id": "465e8e8b-fa39-4659-b2ef-17ce01a55d56",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -192,13 +192,13 @@
           "name": "course_code",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "term": {
           "name": "term",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "course_title": {
           "name": "course_title",

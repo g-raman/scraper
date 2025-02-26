@@ -1,1 +1,0 @@
-ALTER TABLE "courses" DROP CONSTRAINT "courses_term_unique";

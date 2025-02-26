@@ -25,8 +25,8 @@ CREATE TABLE "course_components" (
 --> statement-breakpoint
 ALTER TABLE "course_components" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
 CREATE TABLE "courses" (
-	"course_code" text,
-	"term" text,
+	"course_code" text NOT NULL,
+	"term" text NOT NULL,
 	"course_title" text NOT NULL,
 	"is_deleted" boolean DEFAULT false NOT NULL,
 	CONSTRAINT "courses_course_code_term_pk" PRIMARY KEY("course_code","term"),
