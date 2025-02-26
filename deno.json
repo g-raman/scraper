@@ -5,7 +5,8 @@
     "scrape:terms": "deno run --allow-run --allow-sys --allow-read --allow-write --allow-net --allow-env src/scrape/scrapeAvailableTerms.ts"
     "scrape:subjects": "deno run --allow-run --allow-sys --allow-read --allow-write --allow-net --allow-env src/scrape/scrapeAvailableSubjects.ts"
     "db:generate": "deno --env -A --node-modules-dir npm:drizzle-kit generate",
-    "db:migrate": "deno --env -A --node-modules-dir npm:drizzle-kit migrate"
+    "db:migrate": "deno --env -A --node-modules-dir npm:drizzle-kit migrate",
+    "db:function": "deno --env -A --node-modules-dir npm:drizzle-kit generate --custom --name=get_course_function"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1",
