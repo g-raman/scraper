@@ -1,4 +1,3 @@
-import { createClient } from "@supabase/supabase-js";
 import "jsr:@std/dotenv/load";
 import {
   Course,
@@ -8,7 +7,6 @@ import {
   Term,
   Session,
 } from "./utils/types.ts";
-import { SUPABASE_URL } from "./utils/constants.ts";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import {
@@ -45,17 +43,18 @@ const getAvailableTerms = async (): Promise<Term[]> => {
 
 export const getAvailableSubjects = async () => {
   try {
-    const result = await db
-      .select({ subject: availableSubjectsTable })
+    const results = await db
+      .select({ subject: availableSubjectsTable.subject })
       .from(availableSubjectsTable)
       .orderBy(asc(availableSubjectsTable.subject));
 
-    return result;
+    return results.map((result) => result.subject);
   } catch (error) {
     console.error(
       "Something went wrong when fetching available subjects:\n" + error,
     );
   }
+  return [];
 };
 
 export const upsertCourseDetails = async (
